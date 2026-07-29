@@ -1,0 +1,16 @@
+{
+  "brand": "SHOETEQ",
+  "webshopCountry": "NL",
+  "orderReference": "WEB-NL-200011",
+  "customerEmail": "orders@example.nl",
+  "customerName": "Veiligheid & Zo BV",
+  "lines": [
+    {
+      "sku": "SFT-BOOT-S3",
+      "description": "Safety Boot S3",
+      "quantity": 12,
+      "unitPrice": 64.0,
+      "size": "43"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "brand": "DASSY",
+  "webshopCountry": "BE",
+  "orderReference": "WEB-BE-100234",
+  "customerEmail": "buyer@example.com",
+  "customerName": "Bouwbedrijf Janssens",
+  "lines": [
+    {
+      "sku": "DSY-JKT-NAVY",
+      "description": "Softshell Jacket",
+      "quantity": 5,
+      "unitPrice": 42.5,
+      "size": "L",
+      "color": "Navy",
+      "embroideryText": "JANSSENS"
+    },
+    {
+      "sku": "DSY-TRS-GREY",
+      "description": "Work Trousers",
+      "quantity": 5,
+      "unitPrice": 29.9,
+      "size": "L",
+      "color": "Grey"
+    }
+  ]
+}

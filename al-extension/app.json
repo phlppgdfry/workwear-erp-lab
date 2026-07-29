@@ -1,0 +1,30 @@
+{
+  "id": "b3f1a1d2-4e5a-4a6a-9c3e-2f6a7c8d9e10",
+  "name": "Workwear Brand Extensions",
+  "publisher": "Portfolio Lab",
+  "version": "1.0.0.0",
+  "brief": "Variant configuration, brand consolidation and sync exception tracking for a multi-brand workwear group.",
+  "description": "Sample AL extension: adds size/color/customization variant fields to sales lines, a cross-brand consolidated sales report, and a table/page for logging webshop sync exceptions.",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "24.0.0.0",
+  "idRanges": [
+    {
+      "from": 50100,
+      "to": 50149
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "13.0",
+  "features": ["NoImplicitWith"]
+}

@@ -1,0 +1,15 @@
+{
+  "brand": "PROTEQ",
+  "webshopCountry": "FR",
+  "orderReference": "WEB-FR-300099",
+  "customerEmail": "achats@example.fr",
+  "customerName": "Securite Pro SARL",
+  "lines": [
+    {
+      "sku": "PPE-GLOVE-CUT5",
+      "description": "Cut-Resistant Glove Level 5",
+      "quantity": 0,
+      "unitPrice": 8.75
+    }
+  ]
+}

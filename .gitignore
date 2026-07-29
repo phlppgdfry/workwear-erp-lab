@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.next/
+.env
+*.log
+.DS_Store
+
+# AL build artifacts
+al-extension/.alpackages/
+al-extension/*.app
+al-extension/.altemplates/
