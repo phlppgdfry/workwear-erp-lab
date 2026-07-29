@@ -1,4 +1,4 @@
-report 50100 "Cross-Brand Sales Consolidation"
+report 50100 "Cross-Brand Sales Consolid."
 {
     // Consolidates posted sales invoice totals per brand company, without
     // merging companies. Each brand keeps its own BC company (own G/L,
@@ -32,6 +32,7 @@ report 50100 "Cross-Brand Sales Consolidation"
 
                 if SalesInvHeader.FindSet() then
                     repeat
+                        SalesInvHeader.CalcFields("Amount Including VAT");
                         InvoiceCount += 1;
                         TotalAmount += SalesInvHeader."Amount Including VAT";
                     until SalesInvHeader.Next() = 0;

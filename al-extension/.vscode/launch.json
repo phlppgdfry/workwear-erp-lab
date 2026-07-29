@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Workwear Brand Extensions (sandbox)",
       "environmentType": "Sandbox",
-      "environmentName": "sandbox",
+      "environmentName": "al-dev",
       "startupObjectId": 22,
       "startupObjectType": "Page",
       "breakOnError": "All",

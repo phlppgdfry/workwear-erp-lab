@@ -9,3 +9,4 @@ dist/
 al-extension/.alpackages/
 al-extension/*.app
 al-extension/.altemplates/
+al-extension/.vscode/rad.json
