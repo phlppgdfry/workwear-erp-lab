@@ -27,7 +27,7 @@ app.post("/webshop-order", async (req, res) => {
 
     console.error(`[webshop-sync] order ${order?.orderReference ?? "unknown"} failed: ${message}`);
 
-    await logSyncException(companyName ?? "UNMAPPED", {
+    await logSyncException(companyName ?? config.exceptionLogCompany, {
       brandCode: order?.brand ?? "UNKNOWN",
       sourceSystem: `webshop-${order?.webshopCountry ?? "?"}`,
       orderReference: order?.orderReference ?? "UNKNOWN",

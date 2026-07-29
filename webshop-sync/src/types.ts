@@ -14,14 +14,18 @@ export interface WebshopOrder {
   orderReference: string;
   customerEmail: string;
   customerName: string;
+  // In a real integration this would be resolved from customerEmail via a
+  // customer lookup/match step. For this demo it's supplied directly so the
+  // order can be posted against a known BC customer.
+  customerNumber: string;
   lines: WebshopOrderLine[];
 }
 
 export interface BcSalesOrderPayload {
-  customerNumber?: string;
+  customerNumber: string;
   externalDocumentNumber: string;
   salesOrderLines: Array<{
-    itemId?: string;
+    itemNumber: string;
     lineType: string;
     description: string;
     quantity: number;

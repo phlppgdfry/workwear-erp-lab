@@ -14,6 +14,7 @@ export function resolveCompany(brand: string, brandCompanyMap: Record<string, st
 export function validateOrder(order: WebshopOrder): void {
   if (!order.orderReference) throw new InvalidOrderError("Missing orderReference");
   if (!order.brand) throw new InvalidOrderError("Missing brand");
+  if (!order.customerNumber) throw new InvalidOrderError("Missing customerNumber");
   if (!order.lines || order.lines.length === 0) throw new InvalidOrderError("Order has no lines");
   for (const line of order.lines) {
     if (line.quantity <= 0) throw new InvalidOrderError(`Line "${line.sku}" has invalid quantity`);
@@ -35,9 +36,10 @@ export function toBcSalesOrder(order: WebshopOrder): BcSalesOrderPayload {
   validateOrder(order);
 
   return {
+    customerNumber: order.customerNumber,
     externalDocumentNumber: order.orderReference,
     salesOrderLines: order.lines.map((line) => ({
-      itemId: line.sku,
+      itemNumber: line.sku,
       lineType: "Item",
       description: [line.description, line.size, line.color].filter(Boolean).join(" / "),
       quantity: line.quantity,

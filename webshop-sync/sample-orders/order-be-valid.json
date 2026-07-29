@@ -4,9 +4,10 @@
   "orderReference": "WEB-BE-100234",
   "customerEmail": "buyer@example.com",
   "customerName": "Bouwbedrijf Janssens",
+  "customerNumber": "10000",
   "lines": [
     {
-      "sku": "DSY-JKT-NAVY",
+      "sku": "1896-S",
       "description": "Softshell Jacket",
       "quantity": 5,
       "unitPrice": 42.5,
@@ -15,7 +16,7 @@
       "embroideryText": "JANSSENS"
     },
     {
-      "sku": "DSY-TRS-GREY",
+      "sku": "1900-S",
       "description": "Work Trousers",
       "quantity": 5,
       "unitPrice": 29.9,

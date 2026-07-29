@@ -4,6 +4,7 @@
   "orderReference": "WEB-NL-200011",
   "customerEmail": "orders@example.nl",
   "customerName": "Veiligheid & Zo BV",
+  "customerNumber": "10000",
   "lines": [
     {
       "sku": "SFT-BOOT-S3",

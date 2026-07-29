@@ -1,5 +1,6 @@
 import axios from "axios";
 import { config } from "./config";
+import { BcSalesOrderPayload } from "./types";
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
@@ -27,21 +28,78 @@ async function getAccessToken(): Promise<string> {
   return cachedToken.value;
 }
 
-function companyBaseUrl(companyName: string): string {
-  return `${config.baseUrl}/${config.tenantId}/${config.environment}/api/v2.0/companies('${encodeURIComponent(
-    companyName
-  )}')`;
+const companyIdCache = new Map<string, string>();
+
+// BC's OData "companies('Name With Spaces')" path segment is unreliable to
+// URL-encode correctly across environments; resolving to the immutable
+// company id first and addressing companies(<guid>) is the documented
+// robust pattern.
+async function getCompanyId(companyName: string): Promise<string> {
+  const cached = companyIdCache.get(companyName);
+  if (cached) return cached;
+
+  const token = await getAccessToken();
+  const url = `${config.baseUrl}/${config.tenantId}/${config.environment}/api/v2.0/companies?$filter=${encodeURIComponent(
+    `name eq '${companyName}'`
+  )}`;
+  const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
+  const company = response.data.value?.[0];
+  if (!company) {
+    throw new Error(`No Business Central company found with name "${companyName}"`);
+  }
+
+  companyIdCache.set(companyName, company.id);
+  return company.id;
 }
 
-export async function createSalesOrder(companyName: string, payload: unknown) {
+async function companyBaseUrl(companyName: string, apiSegment: string): Promise<string> {
+  const companyId = await getCompanyId(companyName);
+  return `${config.baseUrl}/${config.tenantId}/${config.environment}/api/${apiSegment}/companies(${companyId})`;
+}
+
+const itemIdCache = new Map<string, string>();
+
+// The standard salesOrders API expects each line's item as an "itemId" (the
+// item's internal GUID), not its number/SKU. Webshop orders only know the
+// SKU, so resolve it per company before posting.
+async function getItemId(companyName: string, itemNumber: string): Promise<string> {
+  const cacheKey = `${companyName}::${itemNumber}`;
+  const cached = itemIdCache.get(cacheKey);
+  if (cached) return cached;
+
+  const token = await getAccessToken();
+  const base = await companyBaseUrl(companyName, "v2.0");
+  const url = `${base}/items?$filter=${encodeURIComponent(`number eq '${itemNumber}'`)}`;
+  const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
+  const item = response.data.value?.[0];
+  if (!item) {
+    throw new Error(`No item found with number "${itemNumber}" in company "${companyName}"`);
+  }
+
+  itemIdCache.set(cacheKey, item.id);
+  return item.id;
+}
+
+export async function createSalesOrder(companyName: string, payload: BcSalesOrderPayload) {
   if (config.mockMode) {
     return { mocked: true, companyName, payload };
   }
 
   const token = await getAccessToken();
-  const response = await axios.post(`${companyBaseUrl(companyName)}/salesOrders`, payload, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const base = await companyBaseUrl(companyName, "v2.0");
+
+  const resolvedLines = await Promise.all(
+    payload.salesOrderLines.map(async ({ itemNumber, ...line }) => ({
+      ...line,
+      itemId: await getItemId(companyName, itemNumber),
+    }))
+  );
+
+  const response = await axios.post(
+    `${base}/salesOrders`,
+    { ...payload, salesOrderLines: resolvedLines },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
   return response.data;
 }
 
@@ -53,10 +111,8 @@ export async function logSyncException(companyName: string, exception: unknown) 
   const token = await getAccessToken();
   // Calls the custom "Brand Sync Exceptions API" page published from the AL
   // extension (APIPublisher "portfoliolab", APIGroup "workwear", v1.0).
-  const url = `${config.baseUrl}/${config.tenantId}/${config.environment}/api/portfoliolab/workwear/v1.0/companies('${encodeURIComponent(
-    companyName
-  )}')/syncExceptions`;
-  const response = await axios.post(url, exception, {
+  const base = await companyBaseUrl(companyName, "portfoliolab/workwear/v1.0");
+  const response = await axios.post(`${base}/syncExceptions`, exception, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
