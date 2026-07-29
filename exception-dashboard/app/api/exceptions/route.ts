@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { listExceptions } from "@/lib/data";
+import { listExceptions } from "@/lib/exceptions";
 
 export async function GET() {
-  return NextResponse.json(listExceptions());
+  return NextResponse.json(await listExceptions());
 }

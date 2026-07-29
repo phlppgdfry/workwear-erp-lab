@@ -9,11 +9,11 @@ export interface SyncException {
   resolvedAt: string | null;
 }
 
-// Mirrors the shape of the "Brand Sync Exceptions API" page from the AL
-// extension (api/portfoliolab/workwear/v1.0/syncExceptions). When
-// BC_API_BASE_URL is set, this module would call that endpoint instead; for
-// the portfolio demo it's an in-memory store seeded from the same failure
-// scenarios webshop-sync produces against the sample orders.
+// In-memory fallback store, used when BC_TENANT_ID/BC_CLIENT_ID/etc. aren't
+// configured (see lib/bc.ts + lib/exceptions.ts), seeded with the same
+// failure scenarios webshop-sync produces against its sample orders. Mirrors
+// the shape of the "Brand Sync Exceptions API" page from the al-extension
+// project (api/portfoliolab/workwear/v1.0/syncExceptions).
 let exceptions: SyncException[] = [
   {
     id: "1",
@@ -47,11 +47,11 @@ let exceptions: SyncException[] = [
   },
 ];
 
-export function listExceptions(): SyncException[] {
+export function listMockExceptions(): SyncException[] {
   return [...exceptions].sort((a, b) => (a.occurredAt < b.occurredAt ? 1 : -1));
 }
 
-export function resolveException(id: string): SyncException | null {
+export function resolveMockException(id: string): SyncException | null {
   const target = exceptions.find((e) => e.id === id);
   if (!target) return null;
   target.resolved = true;

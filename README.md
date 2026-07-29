@@ -54,3 +54,34 @@ Three separate throwaway exercises would each need their own BC connection and
 wouldn't show how the pieces fit together. One coherent scenario mirrors what the
 role actually asks for: translating business needs into a working solution across
 build (AL, integrations) and run (monitoring, documentation).
+
+## Demo
+
+See [DEMO.md](DEMO.md) for a walkthrough script covering all four pieces.
+
+## Verified against a live sandbox
+
+Every piece here has run against a real Business Central sandbox, not just
+compiled: webshop-sync created an actual Sales Order via the API, item and
+company lookups resolve to real BC GUIDs, and exception-dashboard reads and
+resolves real records through the custom API page. Along the way this surfaced
+and fixed several real BC integration issues — a FlowField that needed
+`CalcFields`, OData company-name encoding, permission scoping for a custom
+Entra app registration, and resolving item numbers to GUIDs — documented in
+the git history.
+
+## Known limitations
+
+Deliberate scope cuts for a portfolio project, not oversights:
+
+- **No retry/idempotency in webshop-sync** — a duplicate webhook delivery
+  would create a duplicate Sales Order. A real integration would dedupe on
+  `externalDocumentNumber` before posting.
+- **`Workwear Ext - Full` permission set is broad** (RIMD on all extension
+  tables) rather than scoped per read/write need — fine for a single-tenant
+  demo, not how you'd scope a production integration user.
+- **Secrets live in `.env`/`.env.local`** — acceptable for local development,
+  not for production (would move to Key Vault / managed identity).
+- **exception-dashboard's live mode targets a single company** via
+  `BC_COMPANY_NAME` rather than aggregating across all mapped brands like the
+  AL consolidation report does.

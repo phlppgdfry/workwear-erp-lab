@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resolveException } from "@/lib/data";
+import { resolveException } from "@/lib/exceptions";
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const updated = resolveException(id);
+  const updated = await resolveException(id);
   if (!updated) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
