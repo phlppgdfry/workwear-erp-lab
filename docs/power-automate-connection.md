@@ -67,3 +67,19 @@ in the tenant that owns the BC sandbox/environment.
 For Option A, remove/stop the tunnel after the demo. For Option B, restrict the
 API with authentication and an allowlist/API Management before connecting it to
 an operational flow.
+
+## Standard-license fallback (no Premium)
+
+The generic **HTTP** action used to call a custom API is a Power Automate
+Premium connector. Without a Premium license, keep the approval flow with its
+three outcomes, but remove the HTTP action. After the key user selects
+**Retry**, the operator executes the approved reprocess locally:
+
+```bash
+cd webshop-sync
+npm run reprocess -- <integrationKey>
+```
+
+This retains approval evidence and separation of duties while avoiding a cloud
+secret or Premium connector. It is deliberately a manual operational hand-off;
+the HTTP branch becomes the upgrade path when Premium is available.

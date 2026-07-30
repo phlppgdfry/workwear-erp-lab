@@ -36,6 +36,14 @@ See [the connection guide](../docs/power-automate-connection.md) for the
 temporary ngrok demo route and the durable Azure Container Apps route. Neither
 requires a website; both expose only the integration API.
 
+## Working without Power Automate Premium
+
+The **HTTP** reprocess action is optional and requires Premium. In a standard
+license environment, build the approval flow through the three decisions but
+omit that action. The approved operator uses `npm run reprocess --
+<integrationKey>` on the integration host. This is documented as the manual
+fallback rather than presented as an automatic API integration.
+
 The flow does not decide a root cause itself. It turns a terminal technical
 state into an auditable business decision, which is the appropriate boundary
 for Power Automate.

@@ -10,7 +10,7 @@ custom API.
 | 1 | Trigger/filter | `processingStatus = DeadLetter`, `resolved = false` |
 | 2 | Compose | Store `integrationKey`, category, retry count and reference |
 | 3 | Start and wait for an approval | Assigned to `WORKWEAR_APPROVER_GROUP`; choices: Retry, Manual correction, Reject |
-| 4a | HTTP (Retry branch) | `POST @{WORKWEAR_INTEGRATION_BASE_URL}/operations/@{integrationKey}/reprocess`, header `x-api-key: <secure environment value>` |
+| 4a | HTTP (Retry branch, Premium) | `POST @{WORKWEAR_INTEGRATION_BASE_URL}/operations/@{integrationKey}/reprocess`, header `x-api-key: <secure environment value>` |
 | 4b | Teams/Planner (Manual correction) | Include error, order reference, brand and a BC deep link |
 | 4c | Update BC exception (Reject) | `resolved=true`, write decision note/actor in the environment's audit mechanism |
 | 5 | Update BC exception (Retry) | `reprocessRequested=true`; retain it until the integration reports completion |
@@ -19,3 +19,7 @@ Configure secure inputs/outputs for the HTTP action and use a service principal
 or managed connector connection. Add the `approvalId`, outcome, decision time
 and reprocess response to Dataverse/audit logging where that is standard in the
 target environment.
+
+Without a Premium license, omit step 4a and include the integration key in the
+approval/audit record. The operator runs `npm run reprocess -- <integrationKey>`
+locally after an approved Retry decision.

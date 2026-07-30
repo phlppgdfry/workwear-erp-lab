@@ -59,3 +59,18 @@ Expected outcome:
   `INTEGRATION_API_KEY` and send it in the `x-api-key` header. This protects
   webhook delivery and operational reprocess/retry endpoints; `/health` stays
   public for hosting probes.
+
+## No-Premium Power Automate fallback
+
+The generic Power Automate HTTP connector is Premium. A standard-license
+approval flow can still capture the key-user decision; after an approved
+**Retry**, run this locally on the secure integration host:
+
+```bash
+npm run reprocess -- SHOETEQ::NL::WEB-NL-200011
+```
+
+The command reads `INTEGRATION_API_KEY` from the local `.env`; the secret never
+needs to be placed in Power Automate. When a Premium license is available, the
+same reprocess operation can be automated with the HTTP action described in
+`power-platform/`.
