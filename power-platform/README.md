@@ -32,6 +32,10 @@ and the representative trigger body in [sample-payloads/dead-letter.json](sample
   private gateway/API Management in production, never a laptop localhost URL.
 - `WORKWEAR_APPROVER_GROUP`: key-user group/email for the brand.
 
+See [the connection guide](../docs/power-automate-connection.md) for the
+temporary ngrok demo route and the durable Azure Container Apps route. Neither
+requires a website; both expose only the integration API.
+
 The flow does not decide a root cause itself. It turns a terminal technical
 state into an auditable business decision, which is the appropriate boundary
 for Power Automate.

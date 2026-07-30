@@ -84,6 +84,9 @@ npm install && npm run dev
 npm run mock:orders
 ```
 
+To connect the live approval flow without building a website, use the
+[Power Automate connection guide](docs/power-automate-connection.md).
+
 ## Verified against a live sandbox
 
 Every piece here has run against a real Business Central sandbox, not just
