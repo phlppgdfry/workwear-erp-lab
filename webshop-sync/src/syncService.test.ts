@@ -7,6 +7,7 @@ const order: WebshopOrder = {
   customerEmail: "buyer@example.com", customerName: "Test", customerNumber: "10000",
   lines: [{ sku: "1896-S", description: "Jacket", quantity: 1, unitPrice: 10 }],
 };
+const brandCompanyMap = { DASSY: "CRONUS DASSY" };
 
 function service(createSalesOrder = jest.fn().mockResolvedValue({ id: "bc-order-1" })) {
   return {
@@ -14,7 +15,7 @@ function service(createSalesOrder = jest.fn().mockResolvedValue({ id: "bc-order-
     sync: new SyncService(createMemoryJobStore(), {
       createSalesOrder,
       logSyncException: jest.fn().mockResolvedValue({}),
-    }),
+    }, brandCompanyMap),
   };
 }
 
@@ -54,7 +55,7 @@ describe("SyncService operational safeguards", () => {
       createSalesOrder,
       logSyncException: jest.fn().mockResolvedValue({}),
       releaseToWms,
-    });
+    }, brandCompanyMap);
     const received = sync.receive(order);
     const first = await sync.process(received.job.idempotencyKey);
     expect(first.status).toBe("bcSynced");
@@ -76,7 +77,7 @@ describe("SyncService operational safeguards", () => {
       createSalesOrder,
       logSyncException: jest.fn().mockResolvedValue({}),
       releaseToWms,
-    });
+    }, brandCompanyMap);
     const received = sync.receive(order);
     const deadLetter = await sync.process(received.job.idempotencyKey);
     expect(deadLetter.status).toBe("deadLetter");

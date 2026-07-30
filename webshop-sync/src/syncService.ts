@@ -16,7 +16,11 @@ function errorMessage(error: unknown): string {
 }
 
 export class SyncService {
-  constructor(private readonly store: JobStore, private readonly dependencies: SyncDependencies) {}
+  constructor(
+    private readonly store: JobStore,
+    private readonly dependencies: SyncDependencies,
+    private readonly brandCompanyMap: Record<string, string> = config.brandCompanyMap
+  ) {}
 
   receive(order: WebshopOrder): { job: IntegrationJob; duplicate: boolean } {
     if (!order?.orderReference) throw new InvalidOrderError("Missing orderReference");
@@ -45,7 +49,7 @@ export class SyncService {
 
     const processing = this.update(job, { status: "processing", attemptCount: job.attemptCount + 1 });
     try {
-      const companyName = resolveCompany(processing.order.brand, config.brandCompanyMap);
+      const companyName = resolveCompany(processing.order.brand, this.brandCompanyMap);
       const result = await this.dependencies.createSalesOrder(companyName, toBcSalesOrder(processing.order));
       const bcSynced = this.update(processing, { status: "bcSynced", companyName, bcOrderId: result?.id ?? result?.number });
       return this.processWms(bcSynced);
