@@ -87,6 +87,9 @@ npm run mock:orders
 To connect the live approval flow without building a website, use the
 [Power Automate connection guide](docs/power-automate-connection.md).
 
+The no-Premium approval fallback has also been created and successfully tested
+as a manual cloud flow; see [the Power Platform notes](power-platform/README.md).
+
 ## Verified against a live sandbox
 
 Every piece here has run against a real Business Central sandbox, not just

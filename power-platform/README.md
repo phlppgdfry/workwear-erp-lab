@@ -44,6 +44,15 @@ omit that action. The approved operator uses `npm run reprocess --
 <integrationKey>` on the integration host. This is documented as the manual
 fallback rather than presented as an automatic API integration.
 
+## Verified no-Premium flow
+
+A manual cloud flow named **Workwear — Dead Letter Decision** has been created
+and successfully run in a Power Automate default environment without a Premium
+license. It accepts an `integrationKey`, requests a decision from the assigned
+key user, and evaluates **Retry** against the approval result. The flow is not
+exported as a solution because the available tenant has no Dataverse capacity;
+the portable source blueprint in this folder remains the repository artefact.
+
 The flow does not decide a root cause itself. It turns a terminal technical
 state into an auditable business decision, which is the appropriate boundary
 for Power Automate.
