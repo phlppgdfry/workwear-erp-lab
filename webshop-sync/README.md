@@ -55,3 +55,7 @@ Expected outcome:
   corrected dead letter with `POST /operations/{idempotencyKey}/reprocess`.
 - If `WMS_URL` is set, WMS release happens only *after* the BC order succeeds.
   A WMS retry retains `bcSynced`, so it cannot create a duplicate BC order.
+- Before exposing the service through a tunnel or cloud host, set
+  `INTEGRATION_API_KEY` and send it in the `x-api-key` header. This protects
+  webhook delivery and operational reprocess/retry endpoints; `/health` stays
+  public for hosting probes.

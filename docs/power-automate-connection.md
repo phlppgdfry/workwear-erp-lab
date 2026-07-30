@@ -20,6 +20,7 @@ ngrok config add-authtoken <your-ngrok-authtoken>
 
 # Terminal 1: run the local API with a real BC configuration if desired.
 cd webshop-sync
+# Add INTEGRATION_API_KEY=<a long random secret> to .env first.
 npm run dev
 
 # Terminal 2: create a temporary HTTPS tunnel.
@@ -30,6 +31,9 @@ Copy the `https://…ngrok-free.app` forwarding URL to the Power Automate
 environment variable `WORKWEAR_INTEGRATION_BASE_URL`. Keep both terminals open
 while demonstrating the flow. Do not put a Business Central client secret in a
 flow; it stays in the API's local environment configuration.
+Generate the API key locally with `openssl rand -hex 32`. In the Power Automate
+HTTP action add header `x-api-key` with that value, mark the action's inputs and
+outputs as secure, and do not place the key in this repository.
 
 ## Option B — persistent API with Azure Container Apps
 

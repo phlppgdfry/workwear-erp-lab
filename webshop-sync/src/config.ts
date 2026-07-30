@@ -26,5 +26,8 @@ export const config = {
   maxRetryAttempts: Number(process.env.MAX_RETRY_ATTEMPTS ?? 3),
   retryBaseDelayMs: Number(process.env.RETRY_BASE_DELAY_MS ?? 1000),
   wmsUrl: process.env.WMS_URL ?? "",
+  // Set this whenever the API is reachable outside localhost. Requests to
+  // webhook and operations endpoints must then send x-api-key.
+  integrationApiKey: process.env.INTEGRATION_API_KEY ?? "",
   port: Number(process.env.PORT ?? 4000),
 };
