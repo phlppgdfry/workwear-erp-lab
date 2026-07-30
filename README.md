@@ -15,13 +15,29 @@ country webshops) designed to demonstrate the same skills the role asks for:
 - Product variant configuration (size/color/customization) typical of workwear
 - Second-line "run" concerns: interface exceptions, periodic checks, documentation
 
+## v2 operational flow
+
+```text
+Dealer webshop -> validation + durable idempotency -> Business Central -> WMS simulator -> tracking
+                         |                                  |
+                         +-> retry / dead letter ------------+-> Power Automate approval -> reprocess
+```
+
+The integration key is `brand + webshopCountry + orderReference`. A duplicate
+delivery returns the original result instead of creating another Sales Order.
+Transient failures retry with exponential backoff; permanent failures and
+exhausted retries are sent to a dead-letter state. Crucially, after BC has
+accepted an order, a WMS retry never re-posts that BC order.
+
 ## Structure
 
 ```
 al-extension/         Business Central AL extension (build-side customizations)
 webshop-sync/         Node/TypeScript service: webshop order -> BC Sales Order via API
 exception-dashboard/  Next.js viewer for integration exceptions (run-side monitoring)
-docs/                 Fit-gap notes, solution design write-up
+wms-mock/              Idempotent warehouse release + partial-shipment simulator
+power-platform/        Power Automate solution blueprint, payloads and deployment notes
+docs/                  Analyst artefacts: process, design, mapping, tests and runbook
 ```
 
 ## Scenario
@@ -59,6 +75,15 @@ build (AL, integrations) and run (monitoring, documentation).
 
 See [DEMO.md](DEMO.md) for a walkthrough script covering all four pieces.
 
+The fastest local end-to-end demo is:
+
+```bash
+cd wms-mock && npm install && npm run dev
+cd webshop-sync && cp .env.example .env # set WMS_URL=http://localhost:4100
+npm install && npm run dev
+npm run mock:orders
+```
+
 ## Verified against a live sandbox
 
 Every piece here has run against a real Business Central sandbox, not just
@@ -70,13 +95,15 @@ and fixed several real BC integration issues — a FlowField that needed
 Entra app registration, and resolving item numbers to GUIDs — documented in
 the git history.
 
-## Known limitations
+## Production boundary
 
-Deliberate scope cuts for a portfolio project, not oversights:
+This is a portfolio implementation, not a production deployment. The v2
+operational pattern is implemented and testable locally; its production hosts
+would be Azure Functions/Container Apps, a durable database with a unique key,
+Key Vault/managed identity, monitoring/alerting, and a deployed Power Platform
+solution. See [solution design](docs/solution-design.md) and the [runbook](docs/runbook.md).
 
-- **No retry/idempotency in webshop-sync** — a duplicate webhook delivery
-  would create a duplicate Sales Order. A real integration would dedupe on
-  `externalDocumentNumber` before posting.
+Remaining deliberate scope cuts:
 - **`Workwear Ext - Full` permission set is broad** (RIMD on all extension
   tables) rather than scoped per read/write need — fine for a single-tenant
   demo, not how you'd scope a production integration user.
@@ -85,3 +112,7 @@ Deliberate scope cuts for a portfolio project, not oversights:
 - **exception-dashboard's live mode targets a single company** via
   `BC_COMPANY_NAME` rather than aggregating across all mapped brands like the
   AL consolidation report does.
+- **Power Automate cannot be exported or deployed without access to the target
+  Microsoft environment.** The repo provides its environment-neutral solution
+  blueprint, connection requirements, and sample payloads so a maker can build
+  or export it in that environment without relying on portfolio secrets.

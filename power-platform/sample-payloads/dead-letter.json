@@ -1,0 +1,12 @@
+{
+  "brandCode": "DASSY",
+  "sourceSystem": "webshop-BE",
+  "orderReference": "WEB-BE-400200",
+  "integrationKey": "DASSY::BE::WEB-BE-400200",
+  "errorCategory": "Transient",
+  "retryCount": 3,
+  "processingStatus": "DeadLetter",
+  "errorMessage": "[Transient] BC API timeout",
+  "occurredAt": "2026-07-30T09:15:00.000Z",
+  "resolved": false
+}

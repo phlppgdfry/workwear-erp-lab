@@ -1,45 +1,58 @@
 import express from "express";
 import { config } from "./config";
 import { createSalesOrder, logSyncException } from "./bcClient";
-import { InvalidOrderError, resolveCompany, toBcSalesOrder, UnknownBrandError } from "./transformOrder";
+import { createFileJobStore } from "./jobStore";
+import { SyncService } from "./syncService";
+import { releaseToWms } from "./wmsClient";
 import { WebshopOrder } from "./types";
 
 const app = express();
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", mockMode: config.mockMode });
+  res.json({ status: "ok", mockMode: config.mockMode, retryWorker: "POST /operations/retry-due" });
+});
+
+const syncService = new SyncService(createFileJobStore(config.integrationStatePath), {
+  createSalesOrder,
+  logSyncException,
+  releaseToWms: config.wmsUrl ? (company, order) => releaseToWms(config.wmsUrl, company, order) : undefined,
 });
 
 app.post("/webshop-order", async (req, res) => {
   const order = req.body as WebshopOrder;
-  let companyName: string | undefined;
-
   try {
-    companyName = resolveCompany(order.brand, config.brandCompanyMap);
-    const bcPayload = toBcSalesOrder(order);
-    const result = await createSalesOrder(companyName, bcPayload);
-
-    res.status(201).json({ status: "synced", company: companyName, result });
+    const received = syncService.receive(order);
+    if (received.duplicate) {
+      return res.status(200).json({ status: "duplicate", idempotencyKey: received.job.idempotencyKey, job: received.job });
+    }
+    const job = await syncService.process(received.job.idempotencyKey);
+    const status = job.status === "completed" ? 201 : job.status === "retryScheduled" ? 202 : 422;
+    return res.status(status).json({ status: job.status, idempotencyKey: job.idempotencyKey, job });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    const exceptionType = err instanceof UnknownBrandError || err instanceof InvalidOrderError ? "validation" : "bc-api";
-
     console.error(`[webshop-sync] order ${order?.orderReference ?? "unknown"} failed: ${message}`);
-
-    await logSyncException(companyName ?? config.exceptionLogCompany, {
-      brandCode: order?.brand ?? "UNKNOWN",
-      sourceSystem: `webshop-${order?.webshopCountry ?? "?"}`,
-      orderReference: order?.orderReference ?? "UNKNOWN",
-      errorMessage: `[${exceptionType}] ${message}`,
-      occurredAt: new Date().toISOString(),
-      resolved: false,
-    }).catch((logErr) => {
-      console.error("[webshop-sync] also failed to log exception to BC:", logErr);
-    });
-
-    res.status(422).json({ status: "failed", reason: message });
+    return res.status(422).json({ status: "failed", reason: message });
   }
+});
+
+app.get("/operations/:key", (req, res) => {
+  const job = createFileJobStore(config.integrationStatePath).get(req.params.key);
+  return job ? res.json(job) : res.status(404).json({ error: "Not found" });
+});
+
+app.post("/operations/:key/reprocess", async (req, res) => {
+  try {
+    const job = await syncService.reprocess(req.params.key);
+    return res.status(job.status === "completed" ? 200 : 202).json(job);
+  } catch (error) {
+    return res.status(422).json({ error: error instanceof Error ? error.message : "Unknown error" });
+  }
+});
+
+app.post("/operations/retry-due", async (_req, res) => {
+  const jobs = await syncService.processDue();
+  return res.json({ processed: jobs.length, jobs });
 });
 
 app.listen(config.port, () => {

@@ -32,3 +32,28 @@ export interface BcSalesOrderPayload {
     unitPrice: number;
   }>;
 }
+
+export type ProcessingStatus =
+  | "received"
+  | "processing"
+  | "retryScheduled"
+  | "deadLetter"
+  | "bcSynced"
+  | "completed";
+
+export interface IntegrationJob {
+  idempotencyKey: string;
+  order: WebshopOrder;
+  companyName?: string;
+  status: ProcessingStatus;
+  attemptCount: number;
+  nextRetryAt?: string;
+  lastError?: string;
+  errorCategory?: "Validation" | "Transient" | "Permanent";
+  bcOrderId?: string;
+  wmsStatus?: "notConfigured" | "pending" | "sent" | "retryScheduled" | "deadLetter";
+  wmsAttemptCount?: number;
+  wmsShipment?: { trackingNumber: string; shippedQuantity: number; totalQuantity: number };
+  createdAt: string;
+  updatedAt: string;
+}

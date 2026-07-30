@@ -24,6 +24,11 @@ page 50104 "Brand Sync Exceptions API"
                 field(occurredAt; Rec."Occurred At") { Caption = 'Occurred At'; }
                 field(resolved; Rec.Resolved) { Caption = 'Resolved'; }
                 field(resolvedAt; Rec."Resolved At") { Caption = 'Resolved At'; }
+                field(integrationKey; Rec."Integration Key") { Caption = 'Integration Key'; }
+                field(errorCategory; Rec."Error Category") { Caption = 'Error Category'; }
+                field(retryCount; Rec."Retry Count") { Caption = 'Retry Count'; }
+                field(processingStatus; Rec."Processing Status") { Caption = 'Processing Status'; }
+                field(reprocessRequested; Rec."Reprocess Requested") { Caption = 'Reprocess Requested'; }
                 field(systemId; Rec.SystemId) { Caption = 'Id'; }
             }
         }

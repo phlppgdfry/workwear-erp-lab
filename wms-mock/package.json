@@ -1,0 +1,21 @@
+{
+  "name": "workwear-wms-mock",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Small WMS simulator for the Workwear ERP Lab end-to-end demo.",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.4"
+  }
+}

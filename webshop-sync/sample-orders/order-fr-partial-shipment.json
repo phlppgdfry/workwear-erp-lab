@@ -1,0 +1,18 @@
+{
+  "brand": "PROTEQ",
+  "webshopCountry": "FR",
+  "orderReference": "WEB-FR-400120",
+  "customerEmail": "warehouse-demo@example.com",
+  "customerName": "Warehouse Demo",
+  "customerNumber": "10000",
+  "lines": [
+    {
+      "sku": "PPE-GLOVE-CUT5",
+      "description": "Cut resistant glove",
+      "quantity": 4,
+      "unitPrice": 12.5,
+      "size": "L",
+      "color": "Black"
+    }
+  ]
+}

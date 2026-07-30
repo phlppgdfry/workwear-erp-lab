@@ -48,6 +48,33 @@ table 50101 "Brand Sync Exception"
             Caption = 'Resolved At';
             DataClassification = CustomerContent;
         }
+        field(9; "Integration Key"; Text[100])
+        {
+            Caption = 'Integration Key';
+            DataClassification = CustomerContent;
+        }
+        field(10; "Error Category"; Option)
+        {
+            Caption = 'Error Category';
+            OptionMembers = Validation,Transient,Permanent;
+            DataClassification = CustomerContent;
+        }
+        field(11; "Retry Count"; Integer)
+        {
+            Caption = 'Retry Count';
+            DataClassification = CustomerContent;
+        }
+        field(12; "Processing Status"; Option)
+        {
+            Caption = 'Processing Status';
+            OptionMembers = Received,RetryScheduled,DeadLetter,Completed;
+            DataClassification = CustomerContent;
+        }
+        field(13; "Reprocess Requested"; Boolean)
+        {
+            Caption = 'Reprocess Requested';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
@@ -57,6 +84,7 @@ table 50101 "Brand Sync Exception"
             Clustered = true;
         }
         key(ByStatus; Resolved, "Occurred At") { }
+        key(ByIntegrationKey; "Integration Key") { }
     }
 
     trigger OnModify()

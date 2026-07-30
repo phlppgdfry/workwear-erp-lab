@@ -22,5 +22,9 @@ export const config = {
   exceptionLogCompany:
     process.env.BC_EXCEPTION_LOG_COMPANY ?? Object.values(parseBrandMap(process.env.BRAND_COMPANY_MAP))[0] ?? "",
   mockMode: (process.env.MOCK_MODE ?? "true").toLowerCase() !== "false",
+  integrationStatePath: process.env.INTEGRATION_STATE_PATH ?? ".data/integration-jobs.json",
+  maxRetryAttempts: Number(process.env.MAX_RETRY_ATTEMPTS ?? 3),
+  retryBaseDelayMs: Number(process.env.RETRY_BASE_DELAY_MS ?? 1000),
+  wmsUrl: process.env.WMS_URL ?? "",
   port: Number(process.env.PORT ?? 4000),
 };

@@ -20,9 +20,10 @@ npm run mock:orders
 ```
 
 Expected outcome:
-- `order-be-valid.json` → 201, synced (mocked BC payload logged to console)
-- `order-unmapped-brand.json` → 422, brand not mapped -> exception logged
-- `order-invalid-quantity.json` → 422, validation error -> exception logged
+- `order-be-valid.json` → 201, completed (mocked BC payload)
+- Replay it → 200, `duplicate`; the existing job is returned and BC is not called again
+- `order-unmapped-brand.json` / `order-invalid-quantity.json` → 422,
+  `deadLetter`; a BC exception is logged for key-user review
 
 ## Run it against a real BC sandbox
 
@@ -45,3 +46,12 @@ Expected outcome:
   truth (either always priced in BC, or the webshop price is always trusted
   and BC just records it) — this is exactly the type of standard vs.
   duplicated logic call a fit-gap analysis should catch.
+- A file-backed job store makes the local demo restart-safe. The key is
+  `brand::webshopCountry::orderReference`; in production this interface is a
+  database table with a unique index, not a JSON file.
+- Transient errors (`408`, `429`, `5xx` and network/timeout errors) receive
+  exponential backoff. Validation and other permanent failures dead-letter
+  immediately. Trigger due jobs with `POST /operations/retry-due`; recover a
+  corrected dead letter with `POST /operations/{idempotencyKey}/reprocess`.
+- If `WMS_URL` is set, WMS release happens only *after* the BC order succeeds.
+  A WMS retry retains `bcSynced`, so it cannot create a duplicate BC order.

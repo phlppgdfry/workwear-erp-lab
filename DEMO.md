@@ -1,12 +1,13 @@
 # Demo Script
 
-A ~10 minute walkthrough of all four pieces, in the order that tells the
+A ~15 minute walkthrough of the complete v2 landscape, in the order that tells the
 clearest story: build a Sales Order by hand, then show the same rules
 enforced automatically end to end.
 
-Prerequisites: BC sandbox published (`al-extension`), `webshop-sync` running
-with `MOCK_MODE=false` and real credentials in `.env`, `exception-dashboard`
-running (`npm run dev` in that folder).
+Prerequisites: BC sandbox published (`al-extension`) for the live version,
+`webshop-sync` running, `exception-dashboard` running (`npm run dev` in that
+folder), and optionally `wms-mock` on port 4100. The entire flow also works in
+mock mode without a BC account.
 
 ## 1. Variant pricing on a Sales Order (2 min)
 
@@ -47,7 +48,35 @@ Talking point: brand → company routing lives in config, not code, so
 onboarding a newly acquired brand's webshop is a config change. Company and
 item lookups resolve name/SKU to BC's internal GUIDs automatically.
 
-## 4. Exception visibility, both sides (2 min)
+## 4. Idempotency, retry and dead-letter operations (3 min)
+
+1. Post `order-be-valid.json` twice. The first response is `201 completed`;
+   the second is `200 duplicate` with the original job — no second BC order.
+2. Stop the WMS simulator temporarily and submit a valid order with
+   `WMS_URL` configured. The job remains `bcSynced` and `wmsRetryScheduled`:
+   BC is not called again.
+3. Call `POST /operations/retry-due` after restarting WMS. The same job now
+   completes. To demonstrate the terminal path, keep WMS unavailable through
+   the configured three attempts; it becomes `deadLetter`.
+4. A key user can send `POST /operations/{idempotencyKey}/reprocess` after
+   correcting the root cause. This action is the endpoint the Power Automate
+   approval blueprint calls after a **Retry** decision.
+
+Talking point: a network error is not bad business data. The exception category
+and retry policy make that difference explicit, and the BC/WMS boundary avoids
+the classic duplicate-order failure.
+
+## 5. Warehouse release, partial shipping and tracking (2 min)
+
+1. Start `wms-mock` and set `WMS_URL=http://localhost:4100` for webshop-sync.
+2. Submit `sample-orders/order-fr-partial-shipment.json`.
+3. Open `GET http://localhost:4100/shipments/WEB-FR-400120` to show a
+   `partiallyShipped` response and tracking number.
+
+Talking point: the mock deliberately verifies warehouse contracts (SKU,
+quantity, idempotent release) instead of claiming to be a WMS.
+
+## 6. Exception visibility and Power Automate hand-off (3 min)
 
 1. In Business Central, search **"Brand Sync Exceptions"** — show the two
    failed orders from step 3 logged there, with **Mark Resolved**.
@@ -56,6 +85,9 @@ item lookups resolve name/SKU to BC's internal GUIDs automatically.
 
 Talking point: this covers the "run" side of the role — second-line support
 needs visibility into interface failures, not just build-time customization.
+Open `power-platform/README.md` and show the approval decision table: validation
+errors go to manual correction, transient dead letters offer retry/reject, and
+the audit trail stays with the operational exception.
 
 ## If something breaks live
 
