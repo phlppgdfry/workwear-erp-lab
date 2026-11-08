@@ -7,6 +7,9 @@ Portfolio refresh · 8 November 2026
 - `exception-dashboard`: Next.js production build, TypeScript validation and
   static demo build passed; patched Next.js and PostCSS dependencies.
 - Dashboard `npm audit`: zero known vulnerabilities.
+- Patched compatible Axios, Express and transitive backend dependencies. All
+  three Node components report zero known **production** vulnerabilities with
+  `npm audit --omit=dev`; the 15 sync tests and both backend builds still pass.
 - Chromium public demo: status filter, resolve action, updated summary, reset,
   empty search and CSV export passed.
 - Chromium local Next app, explicitly forced into mock mode: simulated a 503
@@ -15,6 +18,16 @@ Portfolio refresh · 8 November 2026
 - Public demo desktop/mobile fit and zero uncaught JavaScript errors checked.
 - No live BC writes, customer order processing or Power Platform deployment was
   performed during this refresh. Existing live-sandbox history remains separate.
+
+## Remaining development-tool advisory
+
+The sync service's Jest configuration dependency still pulls `deepmerge` 4.3.1,
+the latest published release checked during this refresh. npm reports one low
+severity prototype-poisoning advisory through seven related development packages.
+It is absent from production dependencies. No compatible patched release is
+available; npm's suggested force fix downgrades Jest to 25.1.0. That downgrade
+was not applied. Keep test configuration trusted and revisit the upstream patch
+or a deliberate test-runner migration separately.
 
 ## Browser evidence
 
