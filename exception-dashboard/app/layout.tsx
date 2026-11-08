@@ -2,8 +2,8 @@ import "./globals.css";
 import type { ReactNode } from "react";
 
 export const metadata = {
-  title: "Brand Sync Exceptions",
-  description: "Second-line monitoring for webshop-to-BC sync failures",
+  title: "Workwear ERP Lab — Integration support desk",
+  description: "Multi-brand integration monitoring for webshop, Business Central and warehouse operations.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

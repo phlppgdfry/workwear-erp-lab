@@ -1,5 +1,24 @@
 # Workwear ERP Lab
 
+[![Portfolio demo](https://github.com/phlppgdfry/workwear-erp-lab/actions/workflows/portfolio-pages.yml/badge.svg)](https://github.com/phlppgdfry/workwear-erp-lab/actions/workflows/portfolio-pages.yml)
+
+## Interactive portfolio
+
+**[Open the demo](https://phlppgdfry.github.io/workwear-erp-lab/)** · [Two-minute walkthrough](docs/PORTFOLIO.md) · [Verification notes](docs/VERIFICATION.md)
+
+No credentials required. The public demo uses synthetic sample data; it is an
+independent portfolio project, not an operating terminal or ERP environment.
+
+![Actual desktop demo](docs/screenshots/desktop.png)
+
+<details><summary>Mobile preview</summary>
+
+<img src="docs/screenshots/mobile.png" width="300" alt="Mobile view of the working portfolio demo" />
+
+</details>
+
+---
+
 A self-built portfolio project simulating a multi-brand workwear ERP landscape on
 **Microsoft Dynamics 365 Business Central**, built to prepare for an ERP Business
 Analyst role centered on Business Central, webshop/PLM/PIM/WMS integrations, and

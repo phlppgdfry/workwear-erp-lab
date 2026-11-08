@@ -1,0 +1,35 @@
+name: Portfolio demo
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: portfolio-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: exception-dashboard/package-lock.json
+      - run: npm ci
+        working-directory: exception-dashboard
+      - run: npm run build:demo
+        working-directory: exception-dashboard
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: exception-dashboard/demo-dist
+      - uses: actions/deploy-pages@v4
+        id: deployment

@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .next/
+exception-dashboard/demo-dist/
 *.tsbuildinfo
 .env
 .env.local
