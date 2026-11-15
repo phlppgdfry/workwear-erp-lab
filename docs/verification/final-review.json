@@ -1,0 +1,38 @@
+{
+  "name": "workwear-erp-lab",
+  "url": "https://phlppgdfry.github.io/workwear-erp-lab/",
+  "tested_route": "https://phlppgdfry.github.io/workwear-erp-lab/",
+  "checked_at": "2026-11-15T18:57:30.490Z",
+  "title": "Workwear ERP Lab — Integration support desk",
+  "http_status": 200,
+  "desktop": {
+    "width": 1440,
+    "scroll_width": 1440
+  },
+  "mobile": {
+    "width": 390,
+    "scroll_width": 390
+  },
+  "runtime_errors": [],
+  "status": "passed",
+  "browser": "Chromium via Playwright",
+  "browser_plugin": "unavailable",
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "height": 1040
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  "interaction_checks": [
+    "Open-status filter selects two examples",
+    "Resolving one example updates the filtered queue and summary",
+    "Reset restores the sample exceptions",
+    "PROTEQ filter exports exactly one record",
+    "Empty search works"
+  ],
+  "scope": "Public synthetic-data portfolio demo. No live terminal or Business Central operations were performed."
+}

@@ -74,3 +74,18 @@ The command reads `INTEGRATION_API_KEY` from the local `.env`; the secret never
 needs to be placed in Power Automate. When a Premium license is available, the
 same reprocess operation can be automated with the HTTP action described in
 `power-platform/`.
+
+## Tests and build
+
+Use Node.js 22 or newer (the same major used in CI):
+
+```sh
+npm ci
+npm test
+npm run build
+```
+
+All 15 scenarios use Node's built-in test runner and assertions. No Jest runtime
+is required. Tests compile into ignored `.test-dist/`; production builds exclude
+test files. The scenarios cover validation, pricing, duplicate orders, retry
+exhaustion and WMS recovery without duplicate Business Central orders.

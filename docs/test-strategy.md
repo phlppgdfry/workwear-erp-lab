@@ -1,6 +1,8 @@
 # Test strategy
 
-The CI workflow installs, builds and tests every Node component. Unit tests
+The CI workflow installs and builds every Node component. The sync service runs
+15 scenarios with Node 22’s built-in test runner, compiled separately into
+`.test-dist/`. Unit tests
 cover brand routing, required data, personalization pricing, duplicate webhook
 delivery and retry-to-dead-letter behaviour.
 

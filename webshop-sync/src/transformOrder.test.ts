@@ -1,3 +1,5 @@
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { InvalidOrderError, resolveCompany, toBcSalesOrder, UnknownBrandError, validateOrder } from "./transformOrder";
 import { WebshopOrder } from "./types";
 
@@ -18,43 +20,44 @@ describe("resolveCompany", () => {
   const map = { DASSY: "CRONUS DASSY" };
 
   it("resolves a mapped brand case-insensitively", () => {
-    expect(resolveCompany("dassy", map)).toBe("CRONUS DASSY");
+    assert.equal(resolveCompany("dassy", map), "CRONUS DASSY");
   });
 
   it("throws UnknownBrandError for an unmapped brand", () => {
-    expect(() => resolveCompany("SHOETEQ", map)).toThrow(UnknownBrandError);
+    assert.throws(() => resolveCompany("SHOETEQ", map), UnknownBrandError);
   });
 });
 
 describe("validateOrder", () => {
   it("accepts a well-formed order", () => {
-    expect(() => validateOrder(baseOrder())).not.toThrow();
+    assert.doesNotThrow(() => validateOrder(baseOrder()));
   });
 
   it("rejects a missing orderReference", () => {
-    expect(() => validateOrder(baseOrder({ orderReference: "" }))).toThrow(InvalidOrderError);
+    assert.throws(() => validateOrder(baseOrder({ orderReference: "" })), InvalidOrderError);
   });
 
   it("rejects a missing customerNumber", () => {
-    expect(() => validateOrder(baseOrder({ customerNumber: "" }))).toThrow(InvalidOrderError);
+    assert.throws(() => validateOrder(baseOrder({ customerNumber: "" })), InvalidOrderError);
   });
 
   it("rejects an order with no lines", () => {
-    expect(() => validateOrder(baseOrder({ lines: [] }))).toThrow(InvalidOrderError);
+    assert.throws(() => validateOrder(baseOrder({ lines: [] })), InvalidOrderError);
   });
 
   it("rejects a line with zero or negative quantity", () => {
-    expect(() =>
-      validateOrder(baseOrder({ lines: [{ sku: "X", description: "X", quantity: 0, unitPrice: 1 }] }))
-    ).toThrow(InvalidOrderError);
+    assert.throws(() =>
+      validateOrder(baseOrder({ lines: [{ sku: "X", description: "X", quantity: 0, unitPrice: 1 }] })),
+      InvalidOrderError
+    );
   });
 });
 
 describe("toBcSalesOrder", () => {
   it("maps a plain line without embroidery unchanged", () => {
     const result = toBcSalesOrder(baseOrder());
-    expect(result.salesOrderLines[0].unitPrice).toBe(10);
-    expect(result.salesOrderLines[0].itemNumber).toBe("1896-S");
+    assert.equal(result.salesOrderLines[0].unitPrice, 10);
+    assert.equal(result.salesOrderLines[0].itemNumber, "1896-S");
   });
 
   it("applies the flat fee plus per-character fee when embroidery text is set", () => {
@@ -63,7 +66,7 @@ describe("toBcSalesOrder", () => {
     });
     const result = toBcSalesOrder(order);
     // 10 + 4.5 flat + 4 chars * 0.35 = 15.9
-    expect(result.salesOrderLines[0].unitPrice).toBeCloseTo(15.9);
+    assert.ok(Math.abs(result.salesOrderLines[0].unitPrice - 15.9) < 0.005);
   });
 
   it("joins description, size and color, skipping missing parts", () => {
@@ -71,12 +74,12 @@ describe("toBcSalesOrder", () => {
       lines: [{ sku: "1896-S", description: "Jacket", quantity: 1, unitPrice: 10, size: "L", color: "Navy" }],
     });
     const result = toBcSalesOrder(order);
-    expect(result.salesOrderLines[0].description).toBe("Jacket / L / Navy");
+    assert.equal(result.salesOrderLines[0].description, "Jacket / L / Navy");
   });
 
   it("carries the customer number and external document number through", () => {
     const result = toBcSalesOrder(baseOrder({ orderReference: "WEB-BE-999", customerNumber: "20000" }));
-    expect(result.customerNumber).toBe("20000");
-    expect(result.externalDocumentNumber).toBe("WEB-BE-999");
+    assert.equal(result.customerNumber, "20000");
+    assert.equal(result.externalDocumentNumber, "WEB-BE-999");
   });
 });

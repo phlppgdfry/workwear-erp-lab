@@ -21,6 +21,6 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ matrix.component }}/package-lock.json
       - run: npm ci
-      - run: npm test -- --runInBand
+      - run: npm test
         if: matrix.component == 'webshop-sync'
       - run: npm run build

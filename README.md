@@ -141,3 +141,7 @@ Remaining deliberate scope cuts:
   Microsoft environment.** The repo provides its environment-neutral solution
   blueprint, connection requirements, and sample payloads so a maker can build
   or export it in that environment without relying on portfolio secrets.
+
+## Final portfolio release
+
+[Final source snapshot — 15 November 2026](https://github.com/phlppgdfry/workwear-erp-lab/releases/tag/portfolio-2026-11-15) · [Verification evidence](docs/VERIFICATION.md)

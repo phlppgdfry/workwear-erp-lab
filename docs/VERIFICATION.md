@@ -1,8 +1,8 @@
 # Verification record
 
-Portfolio refresh · 8 November 2026
+Portfolio refresh · 8 November 2026 · Finalized 15 November 2026
 
-- `webshop-sync`: 15 existing Jest tests and TypeScript build passed.
+- `webshop-sync`: 15 original test scenarios pass using Node’s built-in test runner; TypeScript build passed.
 - `wms-mock`: TypeScript build passed.
 - `exception-dashboard`: Next.js production build, TypeScript validation and
   static demo build passed; patched Next.js and PostCSS dependencies.
@@ -19,15 +19,17 @@ Portfolio refresh · 8 November 2026
 - No live BC writes, customer order processing or Power Platform deployment was
   performed during this refresh. Existing live-sandbox history remains separate.
 
-## Remaining development-tool advisory
+## Resolved development-tool advisory
 
-The sync service's Jest configuration dependency still pulls `deepmerge` 4.3.1,
-the latest published release checked during this refresh. npm reports one low
-severity prototype-poisoning advisory through seven related development packages.
-It is absent from production dependencies. No compatible patched release is
-available; npm's suggested force fix downgrades Jest to 25.1.0. That downgrade
-was not applied. Keep test configuration trusted and revisit the upstream patch
-or a deliberate test-runner migration separately.
+The remaining Jest/deepmerge advisory was removed on 15 November 2026 by moving
+all 15 existing scenarios to Node's built-in `node:test`, `node:assert/strict`
+and mock APIs. No application business logic changed. Removing Jest, ts-jest
+and their types removed 256 installed packages. The latest `npm audit` reports
+zero known vulnerabilities across all dependencies of webshop-sync, wms-mock
+and exception-dashboard, including development dependencies.
+
+Tests compile to ignored `.test-dist/`; production TypeScript builds exclude
+`*.test.ts`. CI uses Node 22 and runs the same `npm test` command.
 
 ## Browser evidence
 
@@ -44,3 +46,15 @@ The public deployment is built from the committed source by
 `.github/workflows/portfolio-pages.yml`. Review its Actions run for the exact
 commit and deployment result; this note is not a claim of production integration
 certification, a full accessibility audit or a penetration test.
+
+## Final review — 15 November 2026
+
+The published demo was rechecked in Chromium using Playwright at 1440 × 1040
+and 390 × 844. Page identity, meaningful content, absence of framework overlays,
+working user interactions and CSV contents all passed. No uncaught JavaScript
+errors or page-level horizontal overflow were observed. Desktop and mobile
+screenshots were refreshed from the published demo.
+
+The exact routes, viewports and interaction checks are recorded in
+[the machine-readable final review](verification/final-review.json).
+The finalized source is preserved by the `portfolio-2026-11-15` release tag.
