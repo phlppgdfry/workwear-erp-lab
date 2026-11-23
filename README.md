@@ -142,6 +142,15 @@ Remaining deliberate scope cuts:
   blueprint, connection requirements, and sample payloads so a maker can build
   or export it in that environment without relying on portfolio secrets.
 
-## Final portfolio release
+## Earlier portfolio release
 
 [Final source snapshot — 15 November 2026](https://github.com/phlppgdfry/workwear-erp-lab/releases/tag/portfolio-2026-11-15) · [Verification evidence](docs/VERIFICATION.md)
+
+
+## Portfolio refinement — 24 November 2026
+
+The mobile queue begins within the first viewport. Order references open a keyboard-accessible case dialog with the reported error, suggested next step, occurrence/resolution history and session-only notes. Resolving an exception closes its support record; it does not retry an order.
+
+Browser checks run before every default-branch Pages deployment, in Chromium at 1440×1000 and 390×844. They exercise filters, empty states and actual downloads. Run `cd exception-dashboard && npm ci` followed by `npm run test:e2e`. CI retains the HTML report and failure traces. Mobile here means Chromium emulation, not a physical-device or Safari certification.
+
+[Current refined source release — 24 November 2026](https://github.com/phlppgdfry/workwear-erp-lab/releases/tag/portfolio-2026-11-24). Browser checks also run on pull requests.

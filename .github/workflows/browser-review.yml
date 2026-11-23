@@ -1,0 +1,26 @@
+name: Browser review
+on: pull_request
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: exception-dashboard/package-lock.json
+      - run: npm ci
+        working-directory: exception-dashboard
+      - run: npx playwright install --with-deps chromium
+        working-directory: exception-dashboard
+      - run: npm run test:e2e
+        working-directory: exception-dashboard
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-review-report
+          path: exception-dashboard/playwright-report/
+          retention-days: 7

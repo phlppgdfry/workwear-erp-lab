@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-24",
+  "scope": "Portfolio refinement; synthetic data",
+  "browser": {
+    "engine": "Chromium",
+    "viewports": [
+      [
+        1440,
+        1000
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "functionalChecks": 2,
+    "uncaughtPageErrors": 0
+  },
+  "limitations": [
+    "Mobile emulation; not physical-device or Safari certification",
+    "Synthetic fixtures; no production terminal or ERP connection"
+  ]
+}

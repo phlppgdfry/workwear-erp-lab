@@ -34,3 +34,10 @@ deployment work; the live app is not deployed publicly as part of this portfolio
 
 Closing an exception does not retry an order. Approval and retry semantics stay
 with webshop-sync and the Power Platform blueprint; see the root DEMO.md.
+
+
+## Updated walkthrough — 24 November 2026
+
+The mobile queue begins within the first viewport. Order references open a keyboard-accessible case dialog with the reported error, suggested next step, occurrence/resolution history and session-only notes. Resolving an exception closes its support record; it does not retry an order.
+
+![Mobile exception dossier](screenshots/case-details.png)

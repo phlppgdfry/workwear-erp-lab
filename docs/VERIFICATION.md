@@ -1,3 +1,11 @@
+# Verification — 24 November 2026
+
+The mobile queue begins within the first viewport. Order references open a keyboard-accessible case dialog with the reported error, suggested next step, occurrence/resolution history and session-only notes. Resolving an exception closes its support record; it does not retry an order.
+
+Current checks: production build, functional browser flows on desktop/mobile, CSV/download contents and no uncaught browser errors. PDF source reconciliation and gate-validator checks run in their respective CI pipelines. Updated screenshots are actual renders of the production artifacts.
+
+## Earlier release evidence
+
 # Verification record
 
 Portfolio refresh · 8 November 2026 · Finalized 15 November 2026
