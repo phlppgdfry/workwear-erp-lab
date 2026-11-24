@@ -2,7 +2,7 @@
 
 The first mobile record, native case dialog, suggested guidance, session notes, history, resolution, filtered CSV and reset behavior have been rechecked.
 
-2 Chromium browser checks passed across 1440×1000 desktop and 390×844 mobile emulation. No uncaught page errors or horizontal page overflow were observed. The full five-project set contains 20 browser checks. Current npm audit: zero known vulnerabilities. Local Markdown links resolve. Browser plugin not available; validation used Playwright. Physical devices, Safari and production terminal/ERP integrations are outside this synthetic portfolio acceptance scope.
+2 Chromium browser checks passed across 1440×1000 desktop and 390×844 mobile emulation. No uncaught page errors or horizontal page overflow were observed. The full five-project set contains 20 browser checks. Current npm audit: zero known vulnerabilities. Publication uses the immutable artifact ID from the upload output and the official Pages REST API with job-scoped OIDC. Five deployment tests cover success, mismatched source artifacts, failed deploys, status outages and timeout/cancellation. Credentials and request payloads are not logged. Local Markdown links resolve. Browser plugin not available; validation used Playwright. Physical devices, Safari and production terminal/ERP integrations are outside this synthetic portfolio acceptance scope.
 
 # Verification — 24 November 2026
 

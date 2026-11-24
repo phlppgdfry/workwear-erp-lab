@@ -36,20 +36,16 @@ jobs:
           name: browser-test-report
           path: exception-dashboard/playwright-report/
           retention-days: 7
+      - run: node --test .github/scripts/deploy-pages.test.mjs
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
+        id: pages-artifact
         with:
           path: exception-dashboard/demo-dist
-      - name: Wait for the uploaded Pages artifact to become visible
+      - name: Deploy the exact uploaded Pages artifact
+        id: deployment
+        timeout-minutes: 12
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          for attempt in {1..12}; do
-            count=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '[.artifacts[] | select(.name == "github-pages" and .expired == false)] | length')
-            if [ "$count" -gt 0 ]; then exit 0; fi
-            sleep 5
-          done
-          echo "::error::The uploaded Pages artifact did not become visible within 60 seconds."
-          exit 1
-      - uses: actions/deploy-pages@v5
-        id: deployment
+          PAGES_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}
+        run: node .github/scripts/deploy-pages.mjs

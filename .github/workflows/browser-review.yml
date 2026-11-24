@@ -12,6 +12,7 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: exception-dashboard/package-lock.json
+      - run: node --test .github/scripts/deploy-pages.test.mjs
       - run: npm ci
         working-directory: exception-dashboard
       - run: npx playwright install --with-deps chromium
