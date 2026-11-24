@@ -19,5 +19,13 @@
   "limitations": [
     "Mobile emulation; not physical-device or Safari certification",
     "Synthetic fixtures; no production terminal or ERP connection"
-  ]
+  ],
+  "closeout": {
+    "scope": "Synthetic portfolio demonstrations",
+    "npmKnownVulnerabilities": 0,
+    "localMarkdownLinks": "pass",
+    "uncaughtPageErrors": 0,
+    "horizontalPageOverflow": false,
+    "browserPath": "Playwright; Browser plugin not available"
+  }
 }

@@ -1,3 +1,9 @@
+# Closeout audit — 24 November 2026
+
+The first mobile record, native case dialog, suggested guidance, session notes, history, resolution, filtered CSV and reset behavior have been rechecked.
+
+2 Chromium browser checks passed across 1440×1000 desktop and 390×844 mobile emulation. No uncaught page errors or horizontal page overflow were observed. The full five-project set contains 20 browser checks. Current npm audit: zero known vulnerabilities. Local Markdown links resolve. Browser plugin not available; validation used Playwright. Physical devices, Safari and production terminal/ERP integrations are outside this synthetic portfolio acceptance scope.
+
 # Verification — 24 November 2026
 
 The mobile queue begins within the first viewport. Order references open a keyboard-accessible case dialog with the reported error, suggested next step, occurrence/resolution history and session-only notes. Resolving an exception closes its support record; it does not retry an order.

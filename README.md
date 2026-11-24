@@ -153,4 +153,4 @@ The mobile queue begins within the first viewport. Order references open a keybo
 
 Browser checks run before every default-branch Pages deployment, in Chromium at 1440×1000 and 390×844. They exercise filters, empty states and actual downloads. Run `cd exception-dashboard && npm ci` followed by `npm run test:e2e`. CI retains the HTML report and failure traces. Mobile here means Chromium emulation, not a physical-device or Safari certification.
 
-[Current refined source release — 24 November 2026](https://github.com/phlppgdfry/workwear-erp-lab/releases/tag/portfolio-2026-11-24). Browser checks also run on pull requests.
+[Current refined source release — 24 November 2026](https://github.com/phlppgdfry/workwear-erp-lab/releases/latest). Browser checks also run on pull requests.
