@@ -6,13 +6,16 @@ const env = { GH_TOKEN: 'synthetic-job-token', GITHUB_REPOSITORY: 'example/portf
   GITHUB_RUN_ID: '42', GITHUB_SHA: 'test-commit', PAGES_ARTIFACT_ID: '123',
   ACTIONS_ID_TOKEN_REQUEST_URL: 'https://identity.example/token',
   ACTIONS_ID_TOKEN_REQUEST_TOKEN: 'synthetic-runtime-token' };
-function fixture({ wrongRun = false, status = 'succeed', unavailable = false } = {}) {
+function fixture({ wrongRun = false, status = 'succeed', unavailable = false, artifactMisses = 0, artifactStatus = 404 } = {}) {
   const calls = [], outputs = [];
   const fetcher = async (url, options) => {
     calls.push({ url, options });
     if (url === env.ACTIONS_ID_TOKEN_REQUEST_URL) return Response.json({ value: 'synthetic-oidc-token' });
-    if (url.endsWith('/actions/artifacts/123')) return Response.json({ name: 'github-pages', expired: false,
-      workflow_run: { id: wrongRun ? 99 : 42, head_sha: env.GITHUB_SHA } });
+    if (url.endsWith('/actions/artifacts/123')) {
+      if (artifactMisses-- > 0) return new Response(null, {status:artifactStatus});
+      return Response.json({ name: 'github-pages', expired: false,
+        workflow_run: { id: wrongRun ? 99 : 42, head_sha: env.GITHUB_SHA } });
+    }
     if (url.endsWith('/pages/deployments')) {
       const body = JSON.parse(options.body);
       assert.equal(body.artifact_id, 123); assert.equal(body.oidc_token, 'synthetic-oidc-token');
@@ -49,4 +52,18 @@ test('a stalled deployment times out and attempts cancellation', async () => {
   const f = fixture({ status: 'deployment_in_progress' }); let ticks = 0;
   await assert.rejects(deployPages({ ...f.options, now: () => ticks++ * 600001 }), /timed out/);
   assert.equal(f.calls.at(-1).url.endsWith('/cancel'), true); assert.equal(f.outputs.length, 0);
+});
+test('waits for upload metadata propagation and creates only one deployment', async () => {
+  const f=fixture({artifactMisses:2});await deployPages(f.options);
+  assert.equal(f.calls.filter(call=>call.url.endsWith('/actions/artifacts/123')).length,3);
+  assert.equal(f.calls.filter(call=>call.url.endsWith('/pages/deployments')).length,1);
+  assert.equal(f.outputs.length,1);
+});
+test('missing artifacts fail after bounded reads without acquiring identity or deploying', async () => {
+  const f=fixture({artifactMisses:100});await assert.rejects(deployPages(f.options),/HTTP 404/);
+  assert.equal(f.calls.length,12);assert.equal(f.outputs.length,0);
+});
+test('permission failures are not retried or treated as propagation delay', async () => {
+  const f=fixture({artifactMisses:100,artifactStatus:403});await assert.rejects(deployPages(f.options),/HTTP 403/);
+  assert.equal(f.calls.length,1);assert.equal(f.outputs.length,0);
 });

@@ -44,7 +44,7 @@ jobs:
           path: exception-dashboard/demo-dist
       - name: Deploy the exact uploaded Pages artifact
         id: deployment
-        timeout-minutes: 12
+        timeout-minutes: 15
         env:
           GH_TOKEN: ${{ github.token }}
           PAGES_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}

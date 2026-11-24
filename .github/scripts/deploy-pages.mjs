@@ -20,10 +20,19 @@ export async function deployPages({ env = process.env, fetcher = fetch,
         'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28' },
       ...(body ? { body: JSON.stringify(body) } : {})
     });
-    if (!response.ok) throw new Error(`Pages ${method} ${path} failed (HTTP ${response.status})`);
+    if (!response.ok) throw Object.assign(new Error(`Pages ${method} ${path} failed (HTTP ${response.status})`), { status: response.status });
     return response.status === 204 ? null : response.json();
   }
-  const artifact = await request(`/actions/artifacts/${env.PAGES_ARTIFACT_ID}`);
+  let artifact;
+  // The upload ID is immediate; the REST metadata can take time to propagate.
+  // Retry only reads for this exact ID, never a deployment POST.
+  for (let attempt = 0; attempt < 12; attempt++) {
+    try { artifact = await request(`/actions/artifacts/${env.PAGES_ARTIFACT_ID}`); break; }
+    catch (error) {
+      if (attempt === 11 || ![404, 429, 500, 502, 503, 504].includes(error.status)) throw error;
+      await sleep(5000);
+    }
+  }
   if (artifact.expired || artifact.name !== 'github-pages' ||
       String(artifact.workflow_run?.id) !== String(env.GITHUB_RUN_ID) ||
       artifact.workflow_run?.head_sha !== env.GITHUB_SHA) {
